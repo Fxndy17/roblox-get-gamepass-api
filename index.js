@@ -5,6 +5,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+function filterGamePasses(gamePasses, targetCreatorId) {
+    return gamePasses.filter(gamePass => 
+        gamePass.creator && 
+        gamePass.creator.creatorId.toString() === targetCreatorId.toString()
+    );
+}
+
 app.get('/api/game-passes/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -23,7 +30,7 @@ app.get('/api/game-passes/:userId', async (req, res) => {
         res.json({
             success: true,
             userId: userId,
-            gamePasses: response.data,
+            gamePasses: filterGamePasses(response.data.gamePasses, userId),
             total: response.data.length
         });
 
